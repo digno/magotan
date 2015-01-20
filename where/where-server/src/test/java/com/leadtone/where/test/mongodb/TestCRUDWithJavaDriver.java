@@ -89,14 +89,14 @@ public class TestCRUDWithJavaDriver {
 		String colName = "testCols";
 		TestCRUDWithJavaDriver t = new TestCRUDWithJavaDriver();
 		t.initContext();
-//		DB db = t.init();
+		DB db = t.init();
 //
 //		t.testGetCollections(db);
 //		t.testInsertDataToCollections(db, colName);
 //		t.testDropCollections(db, colName);
 		
-		ActivityServiceImpl a = t.context.getBean(ActivityServiceImpl.class);
-		a.testInsert(null);
+//		ActivityServiceImpl a = t.context.getBean(ActivityServiceImpl.class);
+//		a.testInsert(null);
 		
 	}
 

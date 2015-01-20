@@ -16,9 +16,10 @@ public class LocationDao extends BasicDAO<Location, Datastore> {
 	}
 
 	public Location getMemberLocationByAid(String aid, String mobile) {
-		Query<Location> result = getDs().createQuery(Location.class)
-				.order("-utime").filter("aid", aid).filter("mobile", mobile);
-		return result.get();
+		Query<Location> q = getDs().createQuery(Location.class).order("-utime")
+				.filter("aid", aid).filter("mobile", mobile);
+		DaoLogHelper.logSimpleExplain(q);
+		return q.get();
 	}
 
 }

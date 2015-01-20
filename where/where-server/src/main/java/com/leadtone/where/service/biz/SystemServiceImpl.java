@@ -46,8 +46,12 @@ public class SystemServiceImpl {
 	public Content getUndeliverMessages(HashMap<String, Object> contentMap) {
 		Content resultContent = new Content();
 		Object mobile = contentMap.get("mobile");
+		Object type = contentMap.get("type");
 		try {
-			DBCursor cursor = messageDao.findUndeliverMessages((String) mobile);
+			if (type == null){
+				type = "";
+			}
+			DBCursor cursor = messageDao.findUndeliverMessages((String) mobile,(String) type);
 			cursor.sort(new BasicDBObject("createDate", -1));
 			while (cursor.hasNext()) {
 				DBObject d = cursor.next();

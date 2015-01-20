@@ -2,3 +2,5 @@
 /target/
 /.settings/
 /3rd_lib/
+/.classpath
+/.project

@@ -23,11 +23,13 @@ public class ActivityTargetDao extends BasicDAO<ActivityTarget, Datastore> {
 		Query<ActivityTarget> q = getDs().createQuery(ActivityTarget.class)
 				.order("-utime").filter("aid", aid);
 		QueryResults<ActivityTarget> qr = find(q);
+		DaoLogHelper.logSimpleExplain(q);
 		return qr.asList();
 	}
 
 	public boolean removeTargetByAid(String aid) {
-		Query<ActivityTarget> q = getDs().createQuery(ActivityTarget.class).filter("aid", aid);
+		Query<ActivityTarget> q = getDs().createQuery(ActivityTarget.class)
+				.filter("aid", aid);
 		WriteResult qr = deleteByQuery(q);
 		return qr.getN() > 0 ? true : false;
 	}

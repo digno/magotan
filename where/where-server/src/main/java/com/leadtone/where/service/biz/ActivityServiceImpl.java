@@ -59,11 +59,11 @@ public class ActivityServiceImpl {
 			Object mobile = contentMap.get("mobile");
 			Object nickname = contentMap.get("nickname");
 			Object picture = contentMap.get("picture");
-			if (aid != null && (mobile != null || nickname != null)) {
+			if (aid != null && mobile != null) {
 				ActivityUser au = new ActivityUser();
 				au.setMobile(mobile.toString());
-				au.setNickname(nickname.toString());
-				au.setPicture(picture.toString());
+				au.setNickname((String)nickname);
+				au.setPicture((String)picture);
 				Activity activity = activityDao.findActiviytByAid(aid
 						.toString());
 				String owner = activity.getOwner();
@@ -95,7 +95,8 @@ public class ActivityServiceImpl {
 		return resultContent;
 	}
 	
-	@WhereBiz("join_activity_confirm") // 发起方为 活动的 队长
+	@WhereBiz("join_activity_confirm")
+	// 发起方为 活动的 队长
 	public Content joinActivityConfirm(HashMap<String, Object> contentMap) {
 		Content resultContent = new Content();
 		try {
@@ -104,28 +105,31 @@ public class ActivityServiceImpl {
 			Object nickname = contentMap.get("nickname");
 			Object picture = contentMap.get("picture");
 			Object resultCode = contentMap.get("result");
-			if ( resultCode !=null && aid != null && (mobile != null || nickname != null)) {
-				if (("0").equals(resultCode.toString())){
+			if (resultCode != null && aid != null
+					&& mobile != null ) {
+				if (("0").equals(resultCode.toString())) {
 					ActivityUser au = new ActivityUser();
 					au.setMobile(mobile.toString());
-					au.setNickname(nickname.toString());
-					au.setPicture(picture.toString());
+					au.setNickname((String)nickname);
+					au.setPicture((String)picture);
 					UpdateResults result = activityDao.addActivityMember(
 							aid.toString(), au);
 					if (result.getUpdatedExisting()) {
 						resultContent = ResponseContentHelper
 								.genSimpleResponseContentWithoutType(
 										MsgConstants.ERROR_CODE_0,
-										"join Activity no " + aid + " successed!");
-						Activity a = activityDao.findActiviytByAid(aid.toString());
+										"join Activity no " + aid
+												+ " successed!");
+						Activity a = activityDao.findActiviytByAid(aid
+								.toString());
 						NotificationSender.sendNotify(MsgConstants.ACTIVITY,
-								getMembersMobile(a, ""), //通知发给所有人
+								getMembersMobile(a, a.getOwner()), // 通知不发给队长
 								genNotificationContent(join_type, a, au));
 					}
 				}
 				resultContent = ResponseContentHelper
 						.genSimpleResponseContentWithoutType(
-								MsgConstants.ERROR_CODE_4,
+								MsgConstants.ERROR_CODE_0,
 								"confirm join activity request successed.");
 			} else {
 				resultContent = ResponseContentHelper
@@ -153,11 +157,11 @@ public class ActivityServiceImpl {
 			Object mobile = contentMap.get("mobile");
 			Object nickname = contentMap.get("nickname");
 			Object picture = contentMap.get("picture");
-			if (aid != null && (mobile != null || nickname != null)) {
+			if (aid != null && mobile != null) {
 				ActivityUser au = new ActivityUser();
 				au.setMobile(mobile.toString());
-				au.setNickname(nickname.toString());
-				au.setPicture(picture.toString());
+				au.setNickname((String)nickname);
+				au.setPicture((String)picture);
 				UpdateResults result = activityDao.addActivityMember(
 						aid.toString(), au);
 				if (result.getUpdatedExisting()) {
@@ -584,7 +588,7 @@ public class ActivityServiceImpl {
 		try {
 			Activity saveActivity = new Activity();
 			saveActivity.setContent("111");
-			saveActivity.setAid("222");
+			saveActivity.setAid("00000000000000000");
 			saveActivity.setOwner("333");
 			ActivityUser au = new ActivityUser();
 			au.setMobile("323");

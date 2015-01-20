@@ -12,6 +12,7 @@ import com.leadtone.where.protocol.converter.ProtocolConverter;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBDecoder;
 import com.mongodb.WriteResult;
 
 public class MessageDao{
@@ -46,16 +47,22 @@ public class MessageDao{
 		}
 	}
 	
-	public DBCursor findUndeliverMessages(String mobile){
+	public DBCursor findUndeliverMessages(String mobile,String type){
 		DBCollection dbc = ds.getDB().getCollection("UndeliverMsgs");
 		BasicDBObject bdb = new BasicDBObject();
 		bdb.append("to", mobile);
+		if (!"".equals(type)){
+			bdb.append("content.type", type);
+		}
 		BasicDBObject key=new BasicDBObject("_id",0);//指定需要显示列  
-		return dbc.find(bdb,key);
+		DBCursor cursor = dbc.find(bdb,key);
+		DaoLogHelper.logSimpleExplain(cursor);
+		return cursor;
 	}
 	
 	public void saveDeliveredMessage(WhereMessage message){
 		DBCollection dbc = ds.getDB().getCollection("DeliveredMsgs");
+		
 		BasicDBObject bdb = new BasicDBObject();
 		HashMap<String,Object> map = ProtocolConverter.convertWhereMessageToMap(message);
 		bdb.putAll(map);

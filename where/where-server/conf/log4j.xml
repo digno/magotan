@@ -8,18 +8,25 @@
 		</layout>
 	</appender>
 	<appender name="file" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="../logs/riders.log" />
+		<param name="File" value="../logs/where.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} -[%p:%L] [%C] %m%n" />
 		</layout>
 	</appender>
 	
-	<!-- <logger name="com.leadtone" additivity="false">
-			<level value="info" />
-			<appender-ref ref="file" />
+	<appender name="query" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="../logs/where_query.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} - %m%n" />
+		</layout>
+	</appender>
+	
+	<logger name="where_query_info" additivity="false">
+			<level value="debug" />
+			<appender-ref ref="query" />
 	</logger>
-	 -->
 	<root >
 		<level value="info" />
 		<appender-ref ref="console" />

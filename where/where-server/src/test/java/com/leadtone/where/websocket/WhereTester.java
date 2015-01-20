@@ -82,7 +82,7 @@ public class WhereTester {
 		c0.sendMsg(TestMessageGenerator.genGetUserDetailMessage(mobile0,
 				mobile0));
 		c0.sendMsg(TestMessageGenerator.genGetUserListMessage(mobile0));
-		c0.sendMsg(TestMessageGenerator.genModifyUserMessage(mobile0, "digno"));
+		c0.sendMsg(TestMessageGenerator.genModifyUserMessage(mobile0, "digno111"));
 		c0.sendMsg(TestMessageGenerator.genAddActivityMessage(mobile0, aid,
 				"mobile 0 created activity", "test detail"));
 		c1.sendMsg(TestMessageGenerator.genJoinActivitiesMessage(mobile1, aid));
@@ -105,25 +105,42 @@ public class WhereTester {
 	}
 
 	private void testGroupTwoFunction() throws Exception {
-		String mobile1 = "13910766802";
-		String mobile2 = "13910766800";
-
+		String mobile1 = "13959588877";
+		String mobile2 = "13922635953";
+		String aid = "895848";
+		String type = "user_join_notify";
 		WhereClient c1 = initClient(mobile1);
 		WhereClient c2 = initClient(mobile2);
 
+		c1.sendMsg(TestMessageGenerator.genGetUndelieverMessage(mobile1,type));
+//		c2.sendMsg(TestMessageGenerator.genJoinedActivitiesMessage(mobile2));
+		
+		//  13922635953 收到1通知， 13959588877 收到 1 通知
+//		c1.sendMsg(TestMessageGenerator.genJoinActivityRequestMessage(mobile1, aid, "user_13959588877", "http://"+mobile1));
+//		c2.sendMsg(TestMessageGenerator.genJoinActivityConfirmMessage(mobile2,mobile1, aid, "user_13959588877", "http://"+mobile1));
+		
+	}
+	
+	private void testGroupThreeFunction() throws Exception {
+		String mobile1 = "13935183451";
+		String aid = "895848";
+		WhereClient c1 = initClient(mobile1);
+
 		// ----------------------------------------------------
 
-		c1.sendMsg(TestMessageGenerator.genGetUndelieverMessage(mobile1));
-		c2.sendMsg(TestMessageGenerator.genJoinedActivitiesMessage(mobile2));
+		c1.sendMsg(TestMessageGenerator.genJoinedActivitiesMessage(mobile1));
+		c1.sendMsg(TestMessageGenerator.genFindActivityMessage(mobile1, mobile1));
+		c1.sendMsg(TestMessageGenerator.genJoinActivitiesMessage(mobile1, aid));
 	
 	}
 
 	public static void main(String[] args) throws Exception {
 		WhereTester test = new WhereTester();
 
-		 test.testGroupOneFunction();
+//		 test.testGroupOneFunction();
 
 		test.testGroupTwoFunction();
+//		test.testGroupThreeFunction();
 
 	}
 

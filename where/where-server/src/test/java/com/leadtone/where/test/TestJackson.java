@@ -1,6 +1,7 @@
 package com.leadtone.where.test;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,6 +33,11 @@ public class TestJackson {
 			e.printStackTrace();
 		}
 		
+		
+		HashMap<String, Object> contentMap = new HashMap<String,Object>();
+		
+		Object a = contentMap.get("a");
+		System.out.println((String)a);
 		
 	}
 	

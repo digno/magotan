@@ -1,0 +1,18 @@
+Activity 中查询的字段有
+
+title , aid , members.mobile
+
+
+ActivityTarget 
+
+aid,
+
+Location 
+aid,mobile
+
+
+Message 
+to
+
+User 
+mobile,password

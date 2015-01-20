@@ -281,12 +281,13 @@ public class TestMessageGenerator {
 		return ProtocolConverter.unmarshallMsg(message);
 	}
 	
-	public static String genGetUndelieverMessage(String from) {
+	public static String genGetUndelieverMessage(String from,String type) {
 		WhereMessage message = genBasicMessage("system", from, "server");
 		Content content = new Content();
 		content.setType("get_undeliver_msg");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("mobile", from);
+		map.put("type", type);
 		content.setData(map);
 		message.setContent(content);
 		return ProtocolConverter.unmarshallMsg(message);
@@ -302,6 +303,36 @@ public class TestMessageGenerator {
 		message.setContent(content);
 		return ProtocolConverter.unmarshallMsg(message);
 	}
+	
+	public static String genJoinActivityRequestMessage(String from,String aid,String nickname,String icon) {
+		WhereMessage message = genBasicMessage("activity", from, "server");
+		Content content = new Content();
+		content.setType("join_activity_request");
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("mobile", from);
+		map.put("aid", aid);
+		map.put("nickname", nickname);
+		map.put("picture", icon);
+		content.setData(map);
+		message.setContent(content);
+		return ProtocolConverter.unmarshallMsg(message);
+	}
+	
+	public static String genJoinActivityConfirmMessage(String from ,String mobile,String aid,String nickname,String icon) {
+		WhereMessage message = genBasicMessage("activity", from, "server");
+		Content content = new Content();
+		content.setType("join_activity_confirm");
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("mobile", mobile);
+		map.put("aid", aid);
+		map.put("nickname", nickname);
+		map.put("picture", icon);
+		map.put("result", "0"); // 同意
+		content.setData(map);
+		message.setContent(content);
+		return ProtocolConverter.unmarshallMsg(message);
+	}
+
 
 	
 

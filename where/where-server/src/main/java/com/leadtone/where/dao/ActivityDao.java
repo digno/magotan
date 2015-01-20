@@ -3,7 +3,9 @@ package com.leadtone.where.dao;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
@@ -17,6 +19,8 @@ import com.mongodb.WriteResult;
 
 public class ActivityDao extends BasicDAO<Activity, Datastore> {
 
+	private Logger log = Logger.getLogger(ActivityDao.class);
+
 	protected ActivityDao(Datastore ds) {
 		super(ds);
 	}
@@ -25,20 +29,23 @@ public class ActivityDao extends BasicDAO<Activity, Datastore> {
 		Query<Activity> q = getDs().createQuery(Activity.class);
 		q.field("title").containsIgnoreCase(title);
 		QueryResults<Activity> results = find(q);
+		DaoLogHelper.logSimpleExplain(q);
 		return results;
 	}
 
 	public Activity findActiviytByAid(String aid) {
 		Query<Activity> q = getDs().createQuery(Activity.class);
-		q.field("aid").containsIgnoreCase(aid);
+		q.field("aid").equal(aid);
 		QueryResults<Activity> results = find(q);
+		DaoLogHelper.logSimpleExplain(q);
 		return results.get();
 	}
-	
-	public QueryResults<Activity>  findActivitiesByMobile(String mobile){
+
+	public QueryResults<Activity> findActivitiesByMobile(String mobile) {
 		Query<Activity> q = getDs().createQuery(Activity.class);
 		q.field("members.mobile").equal(mobile);
 		QueryResults<Activity> results = find(q);
+		DaoLogHelper.logSimpleExplain(q);
 		return results;
 	}
 
