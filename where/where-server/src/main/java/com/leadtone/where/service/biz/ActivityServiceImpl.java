@@ -17,6 +17,7 @@ import org.mongodb.morphia.query.UpdateResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.leadtone.mig.tools.annotations.Config;
 import com.leadtone.where.MsgConstants;
 import com.leadtone.where.WhereBiz;
 import com.leadtone.where.bean.Activity;
@@ -41,6 +42,9 @@ public class ActivityServiceImpl {
 	@Autowired
 	private ActivityTargetDao targetDao;
 
+	@Config("max_record_per_request")
+	private int maxActivities = 10;
+	
 	private DateProvider dateProvider = DateProvider.DEFAULT;
 
 	private String join_type = "user_join_notify";
@@ -323,7 +327,7 @@ public class ActivityServiceImpl {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			String aid = (String) contentMap.get("aid");
-			List<ActivityTarget> result = targetDao.getTargetByAid(aid);
+			ActivityTarget result = targetDao.getLatestTargetByAid(aid);
 			resultMap.put(MsgConstants.RESULT, MsgConstants.ERROR_CODE_0);
 			resultMap.put(MsgConstants.LOCS, result);
 			resultContent.setData(resultMap);
@@ -344,16 +348,22 @@ public class ActivityServiceImpl {
 		Content resultContent = new Content();
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			Object title = contentMap.get("title");
-			if (title != null) {
+			String title = (String) contentMap.get("title");
+			if (!StringUtils.isBlank(title.trim())) {
 				QueryResults<Activity> results = activityDao
 						.findActiviytLikeTitle(title.toString());
 				List<Activity> activitys = results.asList();
 				List<HashMap<String, Object>> activityList = new ArrayList<HashMap<String, Object>>();
 				resultMap.put(MsgConstants.RESULT, MsgConstants.ERROR_CODE_0);
+				int i = 0;
 				for (Activity activity : activitys) {
 					HashMap<String, Object> temp = boxingActivityData(activity);
 					activityList.add(temp);
+					i++;
+					if (i>=maxActivities){
+						log.info("too much activities . return "+ maxActivities);
+						break;
+					}
 				}
 				resultMap.put(MsgConstants.ACTIVITIES, activityList);
 				resultContent.setData(resultMap);
@@ -488,7 +498,8 @@ public class ActivityServiceImpl {
 		return resultContent;
 	}
 
-	@WhereBiz("list_activities")
+//	@WhereBiz("list_activities")
+	@Deprecated
 	public Content getActivitiesList(HashMap<String, Object> contentMap) {
 		Content resultContent = new Content();
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();

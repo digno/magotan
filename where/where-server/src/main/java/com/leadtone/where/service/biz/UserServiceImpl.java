@@ -135,7 +135,8 @@ public class UserServiceImpl {
 		return resultContent;
 	}
 	
-	@WhereBiz("getUserList")
+//	@WhereBiz("getUserList")
+	@Deprecated
 	public Content getUserList(HashMap<String, Object> contentMap) {
 
 		Content resultContent = new Content();

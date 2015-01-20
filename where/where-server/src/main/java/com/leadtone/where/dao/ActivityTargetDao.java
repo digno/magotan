@@ -26,6 +26,14 @@ public class ActivityTargetDao extends BasicDAO<ActivityTarget, Datastore> {
 		DaoLogHelper.logSimpleExplain(q);
 		return qr.asList();
 	}
+	
+	public ActivityTarget getLatestTargetByAid(String aid) {
+		Query<ActivityTarget> q = getDs().createQuery(ActivityTarget.class)
+				.order("-utime").filter("aid", aid).limit(1);
+		ActivityTarget qr = findOne(q);
+		DaoLogHelper.logSimpleExplain(q);
+		return qr;
+	}
 
 	public boolean removeTargetByAid(String aid) {
 		Query<ActivityTarget> q = getDs().createQuery(ActivityTarget.class)

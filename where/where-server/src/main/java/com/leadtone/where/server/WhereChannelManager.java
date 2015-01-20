@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import com.leadtone.mig.tools.annotations.Config;
 import com.leadtone.where.ConcurrentContext;
 import com.leadtone.where.MsgConstants;
 import com.leadtone.where.protocol.beans.Content;
@@ -26,6 +27,9 @@ public class WhereChannelManager {
 
 	private Logger log = Logger.getLogger(WhereChannelManager.class);
 
+	@Config("idel_peroid")
+	private int idelPeroid = 300;
+	
 	// 登陆后的链路信息key为用户的email
 	private ConcurrentHashMap<String, WhereChannel> channelsMap = ConcurrentContext
 			.getChannelMapInstance();
@@ -123,7 +127,7 @@ public class WhereChannelManager {
 				while (true) {
 					try {
 						// 3个5分钟
-						long checkPeriod = 30 * 1000; //
+						long checkPeriod = idelPeroid * 1000; //
 						for (Integer channelid : cMap.keySet()) {
 							WhereChannel rc = cMap.get(channelid);
 							sendPingMsg(rc.getChannel());

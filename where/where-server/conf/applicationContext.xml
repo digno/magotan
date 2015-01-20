@@ -29,8 +29,8 @@
 
 	<!-- mongodb config DAO&Service -->
 	<bean id="mongoClient" class="com.leadtone.where.mongo.MongoClientFactoryBean">
-		<property name="host" value="127.0.0.1" />
-		<property name="port" value="27017" />
+		<property name="host" value="${mongodb_host}" />
+		<property name="port" value="${mongodb_port}" />
 	</bean>
 
 	<bean id="morphia" class="com.leadtone.where.mongo.MorphiaFactoryBean">
@@ -40,7 +40,7 @@
 	<bean id="dataStore" class="com.leadtone.where.mongo.DatastoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
 		<property name="morphia" ref="morphia" />
-		<property name="dbName" value="WHERE_DB" />
+		<property name="dbName" value="${mongodb_dbname}" />
 	</bean>
 
 	<!-- dao -->
