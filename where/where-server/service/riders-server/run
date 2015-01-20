@@ -1,0 +1,14 @@
+#!/bin/sh
+
+DIRNAME=`dirname $0`
+
+# Setup PROXY_HOME
+if [ "x$PROXY_HOME" = "x" ];
+then
+    # get the full path (without any relative bits)
+    PROXY_HOME=`cd $DIRNAME;cd ..;cd ..;pwd`
+fi
+
+
+exec $PROXY_HOME/bin/startup.sh
+
