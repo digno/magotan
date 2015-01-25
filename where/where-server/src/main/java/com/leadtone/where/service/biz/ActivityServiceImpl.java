@@ -54,6 +54,8 @@ public class ActivityServiceImpl {
 	private String leave_type = "user_leave_notify";
 
 	private String end_type = "activity_end_notify";
+	
+	private String target_type = "set_target_notify";
 
 	@WhereBiz("join_activity_request") // 发起方为待加入的队员
 	public Content joinActivityRequest(HashMap<String, Object> contentMap) {
@@ -245,13 +247,13 @@ public class ActivityServiceImpl {
 			if (aid != null && mobile != null) {
 				ActivityUser au = new ActivityUser();
 				au.setMobile(mobile.toString());
-				UpdateResults result = activityDao.removeActivityMember(
+				boolean result = activityDao.removeActivityMember(
 						aid.toString(), mobile.toString());
 				resultContent = ResponseContentHelper
 						.genSimpleResponseContentWithoutType(
 								MsgConstants.ERROR_CODE_0, "leave Activity no "
 										+ aid + " successed!");
-				if (result.getUpdatedExisting()) {
+				if (result) {
 					Activity a = activityDao.findActiviytByAid(aid.toString());
 					NotificationSender.sendNotify(MsgConstants.ACTIVITY,
 							getMembersMobile(a, mobile.toString()),
@@ -303,6 +305,10 @@ public class ActivityServiceImpl {
 						.genSimpleResponseContentWithoutType(
 								MsgConstants.ERROR_CODE_0, "aid " + aid
 										+ " set Activity Target successed!");
+				Activity a = activityDao.findActiviytByAid(aid);	
+				if(a!=null){
+					NotificationSender.sendNotify(MsgConstants.ACTIVITY,getMembersMobile(a, a.getOwner()), genTargetNotificationContent(target_type,contentMap));
+				}
 			} else {
 				resultContent = ResponseContentHelper
 						.genSimpleResponseContentWithoutType(
@@ -595,6 +601,14 @@ public class ActivityServiceImpl {
 		return content;
 	}
 
+	private Content genTargetNotificationContent(String loc_type,
+			HashMap<String,Object> contentMap) {
+		Content resultContent = new Content();
+		resultContent.setType(loc_type);
+		resultContent.setData(contentMap);
+		return resultContent;
+	}
+	
 	public void testInsert(HashMap<String, Object> contentMap) {
 		try {
 			Activity saveActivity = new Activity();

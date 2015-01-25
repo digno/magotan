@@ -11,6 +11,7 @@ import com.leadtone.where.InitEnvironment;
 import com.leadtone.where.dao.ActivityDao;
 import com.leadtone.where.mongo.MongoClientFactoryBean;
 import com.leadtone.where.service.biz.ActivityServiceImpl;
+import com.leadtone.where.service.biz.MessageServiceImpl;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -89,7 +90,7 @@ public class TestCRUDWithJavaDriver {
 		String colName = "testCols";
 		TestCRUDWithJavaDriver t = new TestCRUDWithJavaDriver();
 		t.initContext();
-		DB db = t.init();
+//		DB db = t.init();
 //
 //		t.testGetCollections(db);
 //		t.testInsertDataToCollections(db, colName);
@@ -97,6 +98,9 @@ public class TestCRUDWithJavaDriver {
 		
 //		ActivityServiceImpl a = t.context.getBean(ActivityServiceImpl.class);
 //		a.testInsert(null);
+		String message = "{\"version\":\"1.0\",\"msg_id\":\"server15091422106396158\",\"from\":\"server\",\"to\":\"1509\",\"subject\":\"activity\",\"content\":{\"type\":\"exit_activity\",\"data\":{\"result\":\"0\",\"msg\":\"leave Activity no 485552 successed!\"}},\"createDate\":\"20150124213316\",\"status\":\"0\"}";
+		MessageServiceImpl a = t.context.getBean(MessageServiceImpl.class);
+		a.saveUndeliverMessage("13910766840",message);
 		
 	}
 

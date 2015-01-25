@@ -2,6 +2,7 @@ package com.leadtone.where.notify;
 
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.leadtone.where.ConcurrentContext;
 import com.leadtone.where.protocol.beans.WhereMessage;
 import com.leadtone.where.protocol.converter.ProtocolConverter;
 import com.leadtone.where.server.WhereChannel;
@@ -47,7 +49,8 @@ public class WhereNotificationService {
 					WhereMessage mail = nbox.take();
 					String to = mail.getTo();
 					String strMsg = ProtocolConverter.unmarshallMsg(mail);
-					WhereChannel channel = wmc.getActiveWhereChannel().get(to);
+//					WhereChannel channel = wmc.getActiveWhereChannel().get(to);
+					WhereChannel channel = ConcurrentContext.getChannelMapInstance().get(to);
 					if (channel != null) {
 						log.info("channel : [ id = " + channel.getChannelId()  +"] send WhereNotification to " + to
 								+ " , Content is " + strMsg);

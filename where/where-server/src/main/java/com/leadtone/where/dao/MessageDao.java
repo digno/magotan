@@ -30,10 +30,13 @@ public class MessageDao{
 		BasicDBObject bdb = new BasicDBObject();
 		HashMap<String,Object> map = ProtocolConverter.convertWhereMessageToMap(message);
 		bdb.putAll(map);
-		WriteResult result = dbc.insert(bdb);
-		if(result.getN()== 0){
-			log.info("save undeliver message failed!");
-		}
+		dbc.insert(bdb);
+//		WriteResult result = dbc.insert(bdb);
+//		if(result.getN() == 0){
+//			log.info("save undeliver message failed!");
+//		} else {
+//			log.info("save undeliver message successed!");
+//		}
 	}
 	
 	public void saveMessage(WhereMessage message){
@@ -41,10 +44,13 @@ public class MessageDao{
 		BasicDBObject bdb = new BasicDBObject();
 		HashMap<String,Object> map = ProtocolConverter.convertWhereMessageToMap(message);
 		bdb.putAll(map);
-		WriteResult result = dbc.insert(bdb);
-		if(result.getN()== 0){
-			log.info("save undeliver message failed!");
-		}
+		dbc.insert(bdb);
+//		WriteResult result = dbc.insert(bdb);
+//		if(result.getN() == 0){
+//			log.info("save undeliver message failed!");
+//		} else {
+//			log.info("save undeliver message successed!");
+//		}
 	}
 	
 	public DBCursor findUndeliverMessages(String mobile,String type){
@@ -66,10 +72,11 @@ public class MessageDao{
 		BasicDBObject bdb = new BasicDBObject();
 		HashMap<String,Object> map = ProtocolConverter.convertWhereMessageToMap(message);
 		bdb.putAll(map);
-		WriteResult result = dbc.insert(bdb);
-		if(result.getN()== 0){
-			log.info("save undeliver message failed!");
-		}
+		dbc.insert(bdb);
+//		WriteResult result = dbc.insert(bdb);
+//		if(result.getN()== 0){
+//			log.info("save delivered message failed!");
+//		}
 	}
 	
 	public void removeMessage(String id) {

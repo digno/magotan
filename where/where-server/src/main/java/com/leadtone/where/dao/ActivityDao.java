@@ -60,23 +60,28 @@ public class ActivityDao extends BasicDAO<Activity, Datastore> {
 		return results;
 	}
 
-	public UpdateResults removeActivityMember(String aid, String user) {
-
+	public boolean removeActivityMember(String aid, String user) {
+		boolean result = false;
 		Query<Activity> q = getDs().createQuery(Activity.class);
 		q.field("aid").equal(aid);
 		UpdateOperations<Activity> ops = getDs().createUpdateOperations(
 				Activity.class);
 		Activity a = q.get();
-		List<ActivityUser> am = a.getMembers();
-		// 不可用list.remove();
-		for (Iterator<ActivityUser> it = am.iterator(); it.hasNext();) {
-			if (user.equals(it.next().getMobile())) {
-				it.remove();
+		if (a != null) {
+			List<ActivityUser> am = a.getMembers();
+			// 不可用list.remove();
+			for (Iterator<ActivityUser> it = am.iterator(); it.hasNext();) {
+				if (user.equals(it.next().getMobile())) {
+					it.remove();
+				}
 			}
+			ops.set("members", am);
+			UpdateResults results = update(q, ops);
+			result = results.getUpdatedExisting();
+		} else {
+			log.info("can not find Activity with aid : " + aid);
 		}
-		ops.set("members", am);
-		UpdateResults results = update(q, ops);
-		return results;
+		return result;
 	}
 
 	public boolean removeActivity(String aid) {
