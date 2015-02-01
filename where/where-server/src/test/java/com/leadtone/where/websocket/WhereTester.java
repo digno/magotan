@@ -67,7 +67,7 @@ public class WhereTester {
 		String mobile0 = "1390000000";
 		String mobile1 = "13910766800";
 		String mobile2 = "13910766842";
-		String mobile3 = "13910221234";
+		
 		String aid = "000000";
 
 		WhereClient c0 = initClient();
@@ -106,29 +106,47 @@ public class WhereTester {
 	}
 
 	private void testGroupTwoFunction() throws Exception {
-		String mobile1 = "13959588877";
-		String mobile2 = "13922635953";
+		String mobile1 = "13959588877"; // 组员1
+		String mobile2 = "13922635953"; // 队长
+		String mobile3 = "13979144444"; // 组员2
 		String aid = "895848";
 		String type = "user_join_notify";
 		WhereClient c1 = initClient(mobile1);
 		WhereClient c2 = initClient(mobile2);
+		WhereClient c3 = initClient(mobile3);
 
-		
+
 		//  13922635953 收到1通知， 13959588877 收到 1 通知
 		c1.sendMsg(TestMessageGenerator.genJoinActivityRequestMessage(mobile1, aid, "user_13959588877", "http://"+mobile1));
 		c2.sendMsg(TestMessageGenerator.genJoinActivityConfirmMessage(mobile2,mobile1, aid, "user_13959588877", "http://"+mobile1));
 		c1.sendMsg(TestMessageGenerator.genJoinedActivitiesMessage(mobile1));
-		c1.sendMsg(TestMessageGenerator.genGetUndelieverMessage(mobile1,type));	
+		c1.sendMsg(TestMessageGenerator.genGetUndelieverMessage(mobile1,type));
+		c1.closeChannel(); // c1 加入后退出 ，c3 加入后，c1 会收到一条未获取的消息
+		c3.sendMsg(TestMessageGenerator.genJoinActivityRequestMessage(mobile3, aid, "user_13979144444", "http://"+mobile3));
+		c2.sendMsg(TestMessageGenerator.genJoinActivityConfirmMessage(mobile2,mobile3, aid, "user_13979144444", "http://"+mobile3));
 	}
 	
 
+	private void testGroupThreeFunctions() throws Exception{
+		String mobile0 = "1390000051";
+		WhereClient c0 = initClient(mobile0);
+		String aid = "196316";
+		c0.sendMsg(TestMessageGenerator.genRegMessage(mobile0, "moumou"));
+		c0.sendMsg(TestMessageGenerator.genLoginMessage(mobile0));
+		c0.sendMsg(TestMessageGenerator.genJoinActivitiesMessage(mobile0, aid));
+		c0.sendMsg(TestMessageGenerator.genGeoReportMessage(mobile0, aid,
+				new Number[] {  116.8844602102751,
+		          40.04156589398013 }));
+		c0.sendMsg(TestMessageGenerator.genChatMessage(mobile0, aid));
+	}
+	
 	public static void main(String[] args) throws Exception {
 		WhereTester test = new WhereTester();
 
-		test.testGroupOneFunction();
-
+//		test.testGroupOneFunction();
+//
 //		test.testGroupTwoFunction();
-
+		test.testGroupThreeFunctions();
 	}
 
 }

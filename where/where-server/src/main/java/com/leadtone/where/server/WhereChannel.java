@@ -9,9 +9,7 @@ public class WhereChannel {
 	
 	// 通道
 	private Channel channel;
-	
-	// 是否是可接受消息的状态
-	private boolean isActive = true;
+
 	
 	private boolean isLogined = false;
 	
@@ -34,11 +32,7 @@ public class WhereChannel {
 	}
 
 	public boolean isActive() {
-		return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+		return channel.isActive() && channel.isWritable();
 	}
 
 	public boolean isLogined() {

@@ -1,5 +1,7 @@
 package com.leadtone.where.notify;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +34,6 @@ public class WhereNotificationService {
 	private LinkedBlockingQueue<WhereMessage> nbox;
 
 	public void start() {
-
 		nbox = WhereContext.getNotificationQueue();
 		ExecutorService es = Executors.newSingleThreadExecutor();
 		es.execute(new WhereNotifictionEmitter());
@@ -45,17 +46,21 @@ public class WhereNotificationService {
 		public void run() {
 			while (true) {
 				try {
-					
 					WhereMessage mail = nbox.take();
 					String to = mail.getTo();
 					String strMsg = ProtocolConverter.unmarshallMsg(mail);
 //					WhereChannel channel = wmc.getActiveWhereChannel().get(to);
 					WhereChannel channel = ConcurrentContext.getChannelMapInstance().get(to);
-					if (channel != null) {
+					if (channel != null && channel.isActive()) {
 						log.info("channel : [ id = " + channel.getChannelId()  +"] send WhereNotification to " + to
 								+ " , Content is " + strMsg);
 						channel.getChannel().write(new TextWebSocketFrame(strMsg));
 						channel.getChannel().flush();
+//						ChannelFuture cf = channel.getChannel().writeAndFlush(new TextWebSocketFrame(strMsg));
+//						if (!cf.isSuccess()){
+//							log.info("can not send msg to " + to + " . save notification.");
+//							messageService.saveUndeliverMessage(mail);
+//						}
 					} else {
 						log.info(to + " is not logon . save notification.");
 						messageService.saveUndeliverMessage(mail);

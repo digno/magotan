@@ -1,6 +1,7 @@
 package com.leadtone.where.server;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.HashMap;
@@ -130,7 +131,11 @@ public class WhereChannelManager {
 						long checkPeriod = idelPeroid * 1000; //
 						for (Integer channelid : cMap.keySet()) {
 							WhereChannel rc = cMap.get(channelid);
-							sendPingMsg(rc.getChannel());
+							// 如果链接不可用，立即关闭
+							if (!sendPingMsg(rc.getChannel())){
+								closeRiderChannel(channelid);
+							}
+							// 如果长时间闲置则关闭
 							if ((System.currentTimeMillis() - rc.getLastAliveTime()) > checkPeriod * 3) {
 								closeRiderChannel(channelid);
 							}
@@ -148,7 +153,10 @@ public class WhereChannelManager {
 		checkThread.start();
 	}
 
-	private void sendPingMsg(Channel channel) {
+	private boolean sendPingMsg(Channel channel) {
+		if (!channel.isActive() || !channel.isWritable()){
+			return false;
+		}
 		WhereMessage message = new WhereMessage();
 		message.setMsg_id("-1");
 		message.setFrom(MsgConstants.SERVER);
@@ -161,21 +169,26 @@ public class WhereChannelManager {
 		message.setCreateDate(Long.toString(System.currentTimeMillis()));
 		message.setVersion(MsgConstants.VERSION);
 		String msgStr = ProtocolConverter.unmarshallMsg(message);
-		channel.writeAndFlush(new TextWebSocketFrame(msgStr));
+		ChannelFuture cf = channel.writeAndFlush(new TextWebSocketFrame(msgStr));
+		return cf.isSuccess();
 		
 	}
 
+	// Channel 状态变化过程  open -> register -> active 
+	// isWritable @see http://netty.io/4.0/api/io/netty/buffer/ByteBuf.html
+	// Returns true if and only if this buffer has enough room to allow writing the specified number of elements.
 	private void logChannels() {
 		log.info("total user is " + channelsMap.size() + " channel size is "
 				+ cMap.size());
 		log.info("------------ channelsMap -----------------");
 		for (String e : channelsMap.keySet()) {
 			WhereChannel r = channelsMap.get(e);
-			log.info("        " + e + " [" + r.getChannelId() + "] : " + r);
+			log.info("        " + e + " [" + r.getChannelId() + "] : " + r + " status : " + r.getChannel().isActive());
 		}
 		log.info("--------------- cMap --------------------");
 		for (Integer e : cMap.keySet()) {
-			log.info("        " + e + " : " + cMap.get(e));
+			WhereChannel r = cMap.get(e);
+			log.info("        " + e + " : " + cMap.get(e) + " status : " + r.getChannel().isActive());
 		}
 	}
 	

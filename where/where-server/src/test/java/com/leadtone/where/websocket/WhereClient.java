@@ -97,6 +97,10 @@ public class WhereClient {
 		ch.closeFuture().sync();
 	}
 
+	public void closeChannel(){
+		ch.close();
+	}
+	
 	public Channel getChannel() {
 		return ch;
 	}

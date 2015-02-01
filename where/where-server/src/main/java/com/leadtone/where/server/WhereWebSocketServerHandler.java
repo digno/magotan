@@ -147,8 +147,6 @@ public class WhereWebSocketServerHandler extends SimpleChannelInboundHandler<Obj
 			frame.retain();
 			handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame);
 			logger.info("received CloseWebSocketFrame");
-//			cMap.remove(ctx.channel().id());
-//			rcManager.closeRiderChannel(ctx.channel().id());
 			rcManager.closeRiderChannel(ctx.channel().hashCode());
 			return;
 		}
